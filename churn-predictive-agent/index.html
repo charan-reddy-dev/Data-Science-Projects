@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChurnIntel - Predictive Analytics & GenAI SQL Copilot</title>
+    <meta name="description" content="AI customer intelligence platform showcasing supervised machine learning (churn forecasting) and conversational SQL query agents.">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo-container">
+                <div class="logo-icon">C</div>
+                <div class="logo-text">
+                    <h2>ChurnIntel</h2>
+                    <p>Customer Intelligence</p>
+                </div>
+            </div>
+            
+            <nav>
+                <ul class="nav-links">
+                    <li class="nav-item active" data-tab="churn-predictor">
+                        <a href="#churn-predictor" id="nav-churn-predictor">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="18" y1="8" x2="23" y2="13"></line><line x1="23" y1="8" x2="18" y2="13"></line></svg>
+                            Churn Predictor
+                        </a>
+                    </li>
+                    <li class="nav-item" data-tab="sql-copilot">
+                        <a href="#sql-copilot" id="nav-sql-copilot">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                            GenAI SQL Copilot
+                        </a>
+                    </li>
+                    <li class="nav-item" data-tab="retention-sim">
+                        <a href="#retention-sim" id="nav-retention-sim">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                            Retention Simulator
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="footer-profile">
+                    <div class="avatar">CI</div>
+                    <div class="profile-info">
+                        <h4>Data Scientist</h4>
+                        <p>Candidate Portfolio</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            
+            <!-- TAB 1: CHURN PREDICTOR -->
+            <section id="tab-churn-predictor" class="tab-content active">
+                <div class="section-header">
+                    <div class="section-title">
+                        <h1>Customer Churn Predictor</h1>
+                        <p>Adjust variables to scoring features to estimate individual customer churn risk and analyze model factors (SHAP contribution).</p>
+                    </div>
+                    <span class="badge badge-danger">ML Inference Engine</span>
+                </div>
+
+                <div class="dashboard-grid">
+                    <!-- Sliders & Inputs -->
+                    <div class="card">
+                        <h3 class="card-title">
+                            <span class="accent-dot dot-red"></span> Customer Profile Features
+                        </h3>
+                        <form id="predictor-form">
+                            <div class="form-group">
+                                <label for="tenure">Tenure <span class="slider-val" id="tenure-val">12</span> months</label>
+                                <input type="range" id="tenure" min="1" max="72" value="12">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="monthly-charges">Monthly Charges <span class="slider-val">$<span id="charges-val">75.00</span></span></label>
+                                <input type="range" id="monthly-charges" min="20" max="120" value="75" step="1">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="support-calls">Support Calls (Last 3m) <span class="slider-val" id="calls-val">2</span></label>
+                                <input type="range" id="support-calls" min="0" max="8" value="2">
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="contract">Contract Duration</label>
+                                    <select id="contract">
+                                        <option value="Month-to-Month" selected>Month-to-Month</option>
+                                        <option value="One-Year">One-Year</option>
+                                        <option value="Two-Year">Two-Year</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="payment">Payment Method</label>
+                                    <select id="payment">
+                                        <option value="Electronic Check" selected>Electronic Check</option>
+                                        <option value="Credit Card">Credit Card</option>
+                                        <option value="Bank Transfer">Bank Transfer</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Risk Output & Explanability -->
+                    <div class="card">
+                        <h3 class="card-title">Forecast Risk Results</h3>
+                        
+                        <div class="gauge-container">
+                            <div class="radial-progress">
+                                <svg>
+                                    <circle class="bg-circle" cx="75" cy="75" r="65"></circle>
+                                    <circle class="val-circle" id="progress-circle" cx="75" cy="75" r="65"></circle>
+                                </svg>
+                                <div class="gauge-val" id="risk-score-pct">0%</div>
+                            </div>
+                            <div class="gauge-label" id="risk-status">Low Churn Risk</div>
+                        </div>
+
+                        <div class="explain-list" id="shap-contributions">
+                            <!-- Populated by JavaScript dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 2: GENAI SQL COPILOT -->
+            <section id="tab-sql-copilot" class="tab-content">
+                <div class="section-header">
+                    <div class="section-title">
+                        <h1>GenAI SQL Copilot</h1>
+                        <p>Ask natural language questions about customer data. The offline agent translates requests to SQL and displays raw database queries and analytical outputs.</p>
+                    </div>
+                    <span class="badge badge-danger">Agentic Data Agent</span>
+                </div>
+
+                <div class="agent-grid">
+                    <!-- Explanation and Chips -->
+                    <div style="display:flex; flex-direction:column; gap:1.5rem;">
+                        <div class="card">
+                            <h3 class="card-title">
+                                <span class="accent-dot dot-blue"></span> Conversational SQL Agent
+                            </h3>
+                            <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:1.25rem;">
+                                This module simulates a Retrieval-Augmented Generation (RAG) SQL Agent. Try clicking one of the sample prompts below, or type your own question:
+                            </p>
+                            
+                            <div class="prompt-chips">
+                                <span class="prompt-chip" data-query="Select customers at high risk of churning">Get High-Risk Customers</span>
+                                <span class="prompt-chip" data-query="Show customers with Month-to-Month contracts and monthly charges over 85 dollars">Month-to-Month High Charges</span>
+                                <span class="prompt-chip" data-query="Find customers with tenure under 6 months who made more than 2 support calls">Short Tenure & High Support Calls</span>
+                                <span class="prompt-chip" data-query="Find long tenure customers on Two-Year contracts">Retained Multi-Year Customers</span>
+                            </div>
+                        </div>
+
+                        <div class="card" style="font-size:0.8rem; color:var(--text-secondary);">
+                            <h4 style="color:white; margin-bottom:0.5rem;">Database Schema (`customers`):</h4>
+                            <ul style="padding-left:1.25rem; display:flex; flex-direction:column; gap:0.25rem;">
+                                <li><code>customer_id</code> (VARCHAR) - Unique ID</li>
+                                <li><code>tenure</code> (INT) - Months of subscription</li>
+                                <li><code>monthly_charges</code> (DECIMAL) - Monthly billing cost ($)</li>
+                                <li><code>support_calls</code> (INT) - Calls in last 3 months</li>
+                                <li><code>contract</code> (VARCHAR) - Month-to-Month, One-Year, Two-Year</li>
+                                <li><code>churn</code> (INT) - 1 (Churmed/High-Risk), 0 (Active)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Chat Box -->
+                    <div class="card chat-card">
+                        <div class="chat-header">
+                            <div class="agent-avatar">AI</div>
+                            <div>
+                                <h4 style="color:white; font-size:0.95rem;">Copilot Database Analyst</h4>
+                                <p style="font-size:0.75rem; color:var(--text-muted)">Online • Connected to Customers SQLite</p>
+                            </div>
+                        </div>
+                        
+                        <div class="chat-messages" id="chat-box">
+                            <div class="message agent">
+                                Hello! I'm your Data Science Copilot. You can ask me to write SQL queries and analyze customer patterns. Try asking: <em>"Show customers at high risk of churning"</em>
+                            </div>
+                        </div>
+
+                        <div class="chat-input-container">
+                            <input type="text" class="chat-input" id="chat-user-input" placeholder="Query customer database in plain English...">
+                            <button class="btn-send" id="btn-chat-send">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 3: RETENTION SIMULATOR -->
+            <section id="tab-retention-sim" class="tab-content">
+                <div class="section-header">
+                    <div class="section-title">
+                        <h1>Campaign Retention Simulator</h1>
+                        <p>Simulate the financial impact of proactive marketing campaigns by targeting groups segmented by our ML model.</p>
+                    </div>
+                    <span class="badge badge-danger">Impact Evaluation</span>
+                </div>
+
+                <div class="dashboard-grid">
+                    <!-- Simulation Settings -->
+                    <div class="card">
+                        <h3 class="card-title">
+                            <span class="accent-dot dot-green"></span> Campaign Settings
+                        </h3>
+                        <form id="sim-form">
+                            <div class="form-group">
+                                <label for="sim-target-size">Targeted High-Risk Customer Cohort</label>
+                                <input type="number" id="sim-target-size" value="150" min="1" max="1000" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="sim-discount">Voucher Incentive Discount ($)</label>
+                                <div class="input-with-suffix" style="position:relative;">
+                                    <input type="number" id="sim-discount" value="20" min="1" max="100" required>
+                                    <span style="position:absolute; right:1rem; top:50%; transform:translateY(-50%); color:var(--text-muted); font-size:0.85rem;">$</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="sim-success-rate">Voucher Acceptance/Recovery Success Rate</label>
+                                <div class="input-with-suffix" style="position:relative;">
+                                    <input type="number" id="sim-success-rate" value="70" min="1" max="100" required>
+                                    <span style="position:absolute; right:1rem; top:50%; transform:translateY(-50%); color:var(--text-muted); font-size:0.85rem;">%</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="sim-ltv">Customer Lifetime Value (LTV)</label>
+                                <div class="input-with-suffix" style="position:relative;">
+                                    <input type="number" id="sim-ltv" value="120" min="1" max="1000" required>
+                                    <span style="position:absolute; right:1rem; top:50%; transform:translateY(-50%); color:var(--text-muted); font-size:0.85rem;">$</span>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Projection Results -->
+                    <div class="card">
+                        <h3 class="card-title">Simulation ROI</h3>
+                        <div class="results-container">
+                            <div class="metric-highlight">
+                                <div class="metric-value" id="sim-savings">--</div>
+                                <div class="metric-label">Net Campaign Financial Savings</div>
+                            </div>
+
+                            <div class="metrics-grid">
+                                <div class="mini-metric">
+                                    <div class="mini-metric-val" id="sim-saved-revenue">--</div>
+                                    <div class="mini-metric-lbl">Recovered LTV Revenue</div>
+                                </div>
+                                <div class="mini-metric">
+                                    <div class="mini-metric-val" id="sim-cost">--</div>
+                                    <div class="mini-metric-lbl">Total Incentive Cost</div>
+                                </div>
+                                <div class="mini-metric">
+                                    <div class="mini-metric-val" id="sim-saved-count">--</div>
+                                    <div class="mini-metric-lbl">Customers Saved</div>
+                                </div>
+                                <div class="mini-metric">
+                                    <div class="mini-metric-val" id="sim-roi-val">--</div>
+                                    <div class="mini-metric-lbl">Campaign ROI</div>
+                                </div>
+                            </div>
+
+                            <table class="details-table">
+                                <thead>
+                                    <tr>
+                                        <th>Campaign Phase</th>
+                                        <th>Description</th>
+                                        <th>Projected Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Target Cohort size</td>
+                                        <td>Identified by ChurnIntel Model</td>
+                                        <td id="table-cohort">--</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Total Marketing Spend</td>
+                                        <td>Target Cohort * Voucher Value</td>
+                                        <td id="table-spend" style="color:var(--accent-red)">--</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Retained Customers value</td>
+                                        <td>Saved Customers * LTV</td>
+                                        <td id="table-retained-val" style="color:var(--success)">--</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Application Script Logic -->
+    <script src="app.js"></script>
+</body>
+</html>
