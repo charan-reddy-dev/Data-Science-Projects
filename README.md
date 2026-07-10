@@ -25,6 +25,15 @@ Welcome to my Data Science Portfolio. This repository hosts advanced end-to-end 
   * GenAI SQL Copilot simulating a conversational agent translating natural language questions into executable SQL queries.
   * Campaign ROI calculator modeling lifetime value (LTV) recovery and campaign incentive costs.
 
+### 3. [SentinelShield: Real-Time Financial Fraud Detection Engine & Drift Tracker](realtime-fraud-detector)
+* **Live Demo**: [https://charanloyal.github.io/Data-Science-Projects/realtime-fraud-detector/](https://charanloyal.github.io/Data-Science-Projects/realtime-fraud-detector/)
+* **Core Jupyter Notebook**: [fraud_detection_streaming.ipynb](realtime-fraud-detector/notebooks/fraud_detection_streaming.ipynb)
+* **Domain**: Streaming Event Processing, Cybersecurity, Outlier Isolation.
+* **Key Components**:
+  * Real-time transaction outlier scoring using a client-side Isolation Forest path length simulation.
+  * Kolmogorov-Smirnov (KS) statistical test distribution modeling for active feature drift detection.
+  * Interactive SMOTE calibration panel over-sampling minor fraud events to balance model boundaries.
+
 ---
 
 ## 🛠️ Technology Stack & Libraries Used
