@@ -34,6 +34,15 @@ Welcome to my Data Science Portfolio. This repository hosts advanced end-to-end 
   * Kolmogorov-Smirnov (KS) statistical test distribution modeling for active feature drift detection.
   * Interactive SMOTE calibration panel over-sampling minor fraud events to balance model boundaries.
 
+### 4. [LendingClub: Loan Portfolio Risk & Default Prediction](loan_portfolio)
+* **Core Jupyter Notebooks**: [data_analytics_capstone.ipynb](loan_portfolio/notebooks/data_analytics_capstone.ipynb), [loan_portfolio_detailed_self.ipynb](loan_portfolio/notebooks/loan_portfolio_detailed_self.ipynb)
+* **Domain**: Credit Risk Modeling, Default Prediction, SHAP Explainability.
+* **Key Components**:
+  * Exploratory Data Analysis (EDA) on loan distributions, interest rate trends, and borrower metrics.
+  * Supervised binary classification modeling to differentiate between fully paid and charged-off loans.
+  * Model interpretability with SHAP summary, beeswarm plots, and Partial Dependence Plots (PDP).
+  * Portfolio return optimization and loan selection strategies for investors.
+
 ---
 
 ## 🛠️ Technology Stack & Libraries Used
