@@ -35,6 +35,7 @@ Welcome to my Data Science Portfolio. This repository hosts advanced end-to-end 
   * Interactive SMOTE calibration panel over-sampling minor fraud events to balance model boundaries.
 
 ### 4. [LendingClub: Loan Portfolio Risk & Default Prediction](loan_portfolio)
+* **Live Demo**: [https://charanloyal.github.io/Data-Science-Projects/loan_portfolio/](https://charanloyal.github.io/Data-Science-Projects/loan_portfolio/)
 * **Core Jupyter Notebooks**: [data_analytics_capstone.ipynb](loan_portfolio/notebooks/data_analytics_capstone.ipynb), [loan_portfolio_detailed_self.ipynb](loan_portfolio/notebooks/loan_portfolio_detailed_self.ipynb)
 * **Domain**: Credit Risk Modeling, Default Prediction, SHAP Explainability.
 * **Key Components**:

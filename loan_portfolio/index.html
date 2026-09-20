@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LoanIQ - LendingClub Portfolio Risk Engine & Yield Optimizer</title>
+  <meta name="description" content="Interactive LendingClub loan underwriting risk classifier, SHAP explainability engine, and investor portfolio return optimizer.">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="ambient-glow">
+    <div class="glow-sphere sphere-1"></div>
+    <div class="glow-sphere sphere-2"></div>
+    <div class="glow-sphere sphere-3"></div>
+  </div>
+
+  <header class="app-header">
+    <div class="header-content">
+      <div class="brand-section">
+        <div class="brand-logo">
+          <span class="logo-glyph">⚡</span>
+        </div>
+        <div class="brand-titles">
+          <div class="brand-row">
+            <h1>LoanIQ <span class="brand-highlight">Portfolio Engine</span></h1>
+            <span class="pill pill-live">Production ML</span>
+          </div>
+          <p class="brand-subtitle">LendingClub Risk Underwriting & Capital Allocation Optimizer</p>
+        </div>
+      </div>
+
+      <div class="header-stats">
+        <div class="header-stat-item">
+          <span class="stat-label">Model Precision (Class 1)</span>
+          <span class="stat-val emerald-text">98.0%</span>
+        </div>
+        <div class="header-stat-divider"></div>
+        <div class="header-stat-item">
+          <span class="stat-label">Default Recall (Class 0)</span>
+          <span class="stat-val cyan-text">87.0%</span>
+        </div>
+        <div class="header-stat-divider"></div>
+        <div class="header-actions">
+          <a href="../README.md" class="btn btn-glass" title="Back to Main Portfolio">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            <span>All Projects</span>
+          </a>
+          <a href="https://github.com/Charanloyal/Data-Science-Projects/tree/main/loan_portfolio" target="_blank" rel="noopener noreferrer" class="btn btn-primary-glass">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+            <span>Code & Notebooks</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-bar">
+      <button class="nav-tab active" data-tab="underwriter" id="tab-btn-underwriter">
+        <span class="tab-icon">🎯</span>
+        <span class="tab-label">Underwriter & SHAP</span>
+      </button>
+      <button class="nav-tab" data-tab="portfolio" id="tab-btn-portfolio">
+        <span class="tab-icon">📈</span>
+        <span class="tab-label">Portfolio Optimizer</span>
+      </button>
+      <button class="nav-tab" data-tab="stress-test" id="tab-btn-stress">
+        <span class="tab-icon">⚡</span>
+        <span class="tab-label">Macro Stress Testing</span>
+      </button>
+      <button class="nav-tab" data-tab="insights" id="tab-btn-insights">
+        <span class="tab-icon">📊</span>
+        <span class="tab-label">Dataset Analytics</span>
+      </button>
+    </nav>
+  </header>
+
+  <main class="main-container">
+    <!-- TAB 1: LOAN UNDERWRITER & SHAP -->
+    <section class="tab-panel active" id="panel-underwriter">
+      <div class="panel-hero">
+        <div>
+          <h2>Real-Time Loan Risk Assessment</h2>
+          <p>Evaluate applicant financial attributes using balanced logistic regression. Visualizes real-time SHAP feature importance for explainable AI underwriting.</p>
+        </div>
+        <div class="preset-pill-group">
+          <span class="preset-label">Quick Scenarios:</span>
+          <button class="btn btn-chip active" id="preset-prime">Prime Borrower (Grade A)</button>
+          <button class="btn btn-chip" id="preset-balanced">Moderate Risk (Grade C)</button>
+          <button class="btn btn-chip" id="preset-subprime">High Risk (Grade F)</button>
+        </div>
+      </div>
+
+      <div class="two-column-layout">
+        <!-- Input Form Card -->
+        <div class="glass-card form-card">
+          <div class="card-header">
+            <div class="header-indicator"></div>
+            <h3>Applicant & Loan Parameters</h3>
+          </div>
+
+          <form id="underwriter-form" class="underwriter-grid">
+            <!-- Loan Amount -->
+            <div class="form-field">
+              <div class="field-header">
+                <label for="input-amount">Funded Loan Amount</label>
+                <span class="field-value-display" id="display-amount">$15,000</span>
+              </div>
+              <input type="range" id="input-amount" min="1000" max="40000" step="500" value="15000">
+              <div class="range-ticks"><span>$1K</span><span>$20K</span><span>$40K</span></div>
+            </div>
+
+            <!-- Loan Term -->
+            <div class="form-field">
+              <label>Loan Term Duration</label>
+              <div class="term-toggle">
+                <button type="button" class="term-btn active" data-term="36" id="term-36">36 Months (3-Year)</button>
+                <button type="button" class="term-btn" data-term="60" id="term-60">60 Months (5-Year)</button>
+              </div>
+            </div>
+
+            <!-- Loan Grade -->
+            <div class="form-field">
+              <div class="field-header">
+                <label for="input-grade">LendingClub Grade</label>
+                <span class="grade-badge" id="display-grade">Grade A</span>
+              </div>
+              <select id="input-grade" class="select-input">
+                <option value="A" selected>Grade A (Highest Quality, ~7.5% Int)</option>
+                <option value="B">Grade B (Prime Quality, ~11.0% Int)</option>
+                <option value="C">Grade C (Moderate Quality, ~14.5% Int)</option>
+                <option value="D">Grade D (Subprime Quality, ~17.8% Int)</option>
+                <option value="E">Grade E (Speculative Quality, ~20.5% Int)</option>
+                <option value="F">Grade F (High Risk, ~23.2% Int)</option>
+                <option value="G">Grade G (Deep Subprime, ~25.5% Int)</option>
+              </select>
+            </div>
+
+            <!-- Interest Rate -->
+            <div class="form-field">
+              <div class="field-header">
+                <label for="input-int-rate">Contract Interest Rate</label>
+                <span class="field-value-display" id="display-int-rate">7.5%</span>
+              </div>
+              <input type="range" id="input-int-rate" min="5.0" max="26.0" step="0.1" value="7.5">
+              <div class="range-ticks"><span>5%</span><span>15%</span><span>26%</span></div>
+            </div>
+
+            <!-- Annual Income -->
+            <div class="form-field">
+              <div class="field-header">
+                <label for="input-income">Borrower Annual Income</label>
+                <span class="field-value-display" id="display-income">$85,000</span>
+              </div>
+              <input type="range" id="input-income" min="15000" max="250000" step="2500" value="85000">
+              <div class="range-ticks"><span>$15K</span><span>$125K</span><span>$250K</span></div>
+            </div>
+
+            <!-- Debt to Income -->
+            <div class="form-field">
+              <div class="field-header">
+                <label for="input-dti">Debt-to-Income (DTI)</label>
+                <span class="field-value-display" id="display-dti">12.5%</span>
+              </div>
+              <input type="range" id="input-dti" min="1.0" max="45.0" step="0.5" value="12.5">
+              <div class="range-ticks"><span>1% (Clean)</span><span>25%</span><span>45% (Strained)</span></div>
+            </div>
+
+            <!-- Revolving Credit Utilization -->
+            <div class="form-field">
+              <div class="field-header">
+                <label for="input-util">Revolving Credit Utilization</label>
+                <span class="field-value-display" id="display-util">28.0%</span>
+              </div>
+              <input type="range" id="input-util" min="0" max="100" step="1" value="28">
+              <div class="range-ticks"><span>0%</span><span>50%</span><span>100%</span></div>
+            </div>
+
+            <!-- Home Ownership & Bankruptcy -->
+            <div class="form-row-2">
+              <div class="form-field">
+                <label for="input-home">Home Ownership</label>
+                <select id="input-home" class="select-input">
+                  <option value="MORTGAGE" selected>Mortgage</option>
+                  <option value="OWN">Own Outright</option>
+                  <option value="RENT">Rent</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label for="input-bk">Bankruptcy Record</label>
+                <select id="input-bk" class="select-input">
+                  <option value="0" selected>0 (Clean Record)</option>
+                  <option value="1">1 Prior Bankruptcy</option>
+                  <option value="2">2+ Bankruptcies</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Loan Purpose -->
+            <div class="form-field">
+              <label for="input-purpose">Stated Loan Purpose</label>
+              <select id="input-purpose" class="select-input">
+                <option value="debt_consolidation" selected>Debt Consolidation</option>
+                <option value="credit_card">Credit Card Refinance</option>
+                <option value="home_improvement">Home Improvement</option>
+                <option value="small_business">Small Business</option>
+                <option value="major_purchase">Major Purchase</option>
+              </select>
+            </div>
+          </form>
+        </div>
+
+        <!-- Real-time Decision & Explainability Card -->
+        <div class="decision-column">
+          <!-- Decision Card -->
+          <div class="glass-card decision-card" id="decision-panel">
+            <div class="decision-header">
+              <span class="decision-sub">Underwriting Engine Verdict</span>
+              <div class="decision-badge badge-approve" id="decision-badge">
+                <span class="badge-icon">✓</span>
+                <span class="badge-text" id="decision-text">APPROVED FOR FUNDING</span>
+              </div>
+            </div>
+
+            <div class="kpi-score-grid">
+              <div class="score-box">
+                <span class="score-label">Default Risk Probability</span>
+                <div class="score-val-row">
+                  <span class="score-number emerald-text" id="kpi-default-prob">3.2%</span>
+                </div>
+                <div class="meter-track">
+                  <div class="meter-bar emerald-fill" id="meter-default" style="width: 3.2%;"></div>
+                </div>
+                <span class="score-hint">Market avg: 14.9%</span>
+              </div>
+
+              <div class="score-box">
+                <span class="score-label">Predicted Payoff Likelihood</span>
+                <div class="score-val-row">
+                  <span class="score-number emerald-text" id="kpi-payoff-prob">96.8%</span>
+                </div>
+                <div class="meter-track">
+                  <div class="meter-bar emerald-fill" id="meter-payoff" style="width: 96.8%;"></div>
+                </div>
+                <span class="score-hint">Class 1 Prediction</span>
+              </div>
+
+              <div class="score-box">
+                <span class="score-label">Credence Risk Score</span>
+                <div class="score-val-row">
+                  <span class="score-number cyan-text" id="kpi-credit-score">782</span>
+                  <span class="score-scale">/ 850</span>
+                </div>
+                <div class="meter-track">
+                  <div class="meter-bar cyan-fill" id="meter-score" style="width: 82%;"></div>
+                </div>
+                <span class="score-hint" id="kpi-score-tier">Prime Tier</span>
+              </div>
+            </div>
+
+            <!-- Investment Recommendation Summary -->
+            <div class="recommendation-callout" id="recommendation-box">
+              <div class="callout-icon" id="callout-icon">💡</div>
+              <div class="callout-content">
+                <h4 id="callout-title">Highly Recommended Note</h4>
+                <p id="callout-desc">Low default probability combined with solid annual income ($85K) and clean credit history makes this note an ideal fit for institutional and P2P portfolios.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- SHAP Feature Contributions Card -->
+          <div class="glass-card shap-card">
+            <div class="card-header">
+              <div class="header-indicator cyan"></div>
+              <div>
+                <h3>SHAP Feature Contribution Waterfall</h3>
+                <p class="card-subtitle">Quantified impact pushing the loan toward Full Repayment (+) or Default (-)</p>
+              </div>
+            </div>
+
+            <div class="chart-container" style="height: 230px; position: relative;">
+              <canvas id="shapWaterfallChart"></canvas>
+            </div>
+
+            <div class="shap-breakdown-list" id="shap-breakdown-list">
+              <!-- Dynamically rendered feature impact items -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: PORTFOLIO YIELD OPTIMIZER -->
+    <section class="tab-panel" id="panel-portfolio">
+      <div class="panel-hero">
+        <div>
+          <h2>P2P Loan Portfolio Optimizer</h2>
+          <p>Allocate investment capital across LendingClub loan grades. Contrast random baseline market selection with our balanced Machine Learning filtration model.</p>
+        </div>
+        <div class="strategy-pill-group">
+          <span class="preset-label">Investment Profile:</span>
+          <button class="btn btn-chip active" id="strat-conservative">Conservative (A-B)</button>
+          <button class="btn btn-chip" id="strat-balanced">Balanced Growth (A-C)</button>
+          <button class="btn btn-chip" id="strat-yield">High-Yield Aggressive (B-E)</button>
+        </div>
+      </div>
+
+      <!-- Top Metric KPI Comparison Cards -->
+      <div class="portfolio-metrics-grid">
+        <div class="metric-card">
+          <span class="metric-card-label">Total Capital Deployed</span>
+          <div class="metric-card-value" id="port-val-capital">$100,000</div>
+          <span class="metric-card-sub">Diversified across 1,000+ notes</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-card-label">Baseline Market Default Rate</span>
+          <div class="metric-card-value rose-text" id="port-val-base-default">14.90%</div>
+          <span class="metric-card-sub">Historical LendingClub avg</span>
+        </div>
+        <div class="metric-card highlight-card">
+          <span class="metric-card-label">ML-Filtered Default Rate</span>
+          <div class="metric-card-value emerald-text" id="port-val-ml-default">1.85%</div>
+          <span class="metric-card-sub">↓ 87.6% default reduction</span>
+        </div>
+        <div class="metric-card highlight-card">
+          <span class="metric-card-label">Net Projected IRR (Yield)</span>
+          <div class="metric-card-value cyan-text" id="port-val-net-irr">10.42%</div>
+          <span class="metric-card-sub" id="port-val-alpha">+3.82% Alpha vs Baseline</span>
+        </div>
+      </div>
+
+      <div class="two-column-layout">
+        <!-- Controls -->
+        <div class="glass-card form-card">
+          <div class="card-header">
+            <div class="header-indicator"></div>
+            <h3>Portfolio Construction Parameters</h3>
+          </div>
+
+          <div class="portfolio-controls">
+            <!-- Capital Input -->
+            <div class="form-field">
+              <div class="field-header">
+                <label for="port-capital-slider">Investment Capital</label>
+                <span class="field-value-display" id="port-display-capital">$100,000</span>
+              </div>
+              <input type="range" id="port-capital-slider" min="10000" max="1000000" step="10000" value="100000">
+              <div class="range-ticks"><span>$10K</span><span>$500K</span><span>$1.0M</span></div>
+            </div>
+
+            <!-- Grade Allocation Sliders -->
+            <div class="grade-allocator-section">
+              <label class="section-subheading">Grade Allocation Target Mix</label>
+              
+              <div class="grade-slider-row">
+                <span class="grade-tag grade-tag-a">Grade A (6-8% Yield)</span>
+                <input type="range" class="grade-slider" id="alloc-a" min="0" max="100" value="40">
+                <span class="alloc-val" id="alloc-val-a">40%</span>
+              </div>
+
+              <div class="grade-slider-row">
+                <span class="grade-tag grade-tag-b">Grade B (9-12% Yield)</span>
+                <input type="range" class="grade-slider" id="alloc-b" min="0" max="100" value="35">
+                <span class="alloc-val" id="alloc-val-b">35%</span>
+              </div>
+
+              <div class="grade-slider-row">
+                <span class="grade-tag grade-tag-c">Grade C (13-16% Yield)</span>
+                <input type="range" class="grade-slider" id="alloc-c" min="0" max="100" value="20">
+                <span class="alloc-val" id="alloc-val-c">20%</span>
+              </div>
+
+              <div class="grade-slider-row">
+                <span class="grade-tag grade-tag-d">Grade D-G (17-25% Yield)</span>
+                <input type="range" class="grade-slider" id="alloc-d" min="0" max="100" value="5">
+                <span class="alloc-val" id="alloc-val-d">5%</span>
+              </div>
+            </div>
+
+            <!-- ML Filter Toggles -->
+            <div class="filter-toggles-section">
+              <label class="section-subheading">Active ML Filtering Criteria</label>
+              <div class="toggle-option">
+                <input type="checkbox" id="filter-ml-class1" checked>
+                <label for="filter-ml-class1">
+                  <strong>Enforce Logistic Regression Class 1 Filter</strong>
+                  <span>Disqualify any loan predicted with default probability > 15%</span>
+                </label>
+              </div>
+              <div class="toggle-option">
+                <input type="checkbox" id="filter-no-bk" checked>
+                <label for="filter-no-bk">
+                  <strong>Strict Bankruptcy Elimination</strong>
+                  <span>Exclude borrowers with public record bankruptcies (+0.10% net IRR boost)</span>
+                </label>
+              </div>
+              <div class="toggle-option">
+                <input type="checkbox" id="filter-term-tilt" checked>
+                <label for="filter-term-tilt">
+                  <strong>36-Month Term Overweighting (75/25 Mix)</strong>
+                  <span>3-year loans historically exhibit lower charge-off volatility</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts Column -->
+        <div class="charts-column">
+          <!-- Cumulative Return Chart -->
+          <div class="glass-card">
+            <div class="card-header">
+              <div class="header-indicator emerald"></div>
+              <div>
+                <h3>Cumulative Cashflow & Capital Growth (36 Months)</h3>
+                <p class="card-subtitle">ML-Filtered Portfolio vs Raw LendingClub Market Average</p>
+              </div>
+            </div>
+            <div class="chart-container" style="height: 250px;">
+              <canvas id="portfolioGrowthChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Grade Distribution & Loss Breakdown -->
+          <div class="two-card-row">
+            <div class="glass-card">
+              <div class="card-header">
+                <div class="header-indicator cyan"></div>
+                <h4>Capital Distribution</h4>
+              </div>
+              <div class="chart-container" style="height: 180px;">
+                <canvas id="portfolioDonutChart"></canvas>
+              </div>
+            </div>
+
+            <div class="glass-card">
+              <div class="card-header">
+                <div class="header-indicator amber"></div>
+                <h4>Default & Loss Summary</h4>
+              </div>
+              <div class="portfolio-loss-summary">
+                <div class="loss-row">
+                  <span>Gross Contract Yield</span>
+                  <span class="loss-val bold" id="summary-gross">11.85%</span>
+                </div>
+                <div class="loss-row">
+                  <span>Expected Charge-Off Loss</span>
+                  <span class="loss-val rose-text" id="summary-loss">-0.93%</span>
+                </div>
+                <div class="loss-row">
+                  <span>Servicing Fee (LendingClub)</span>
+                  <span class="loss-val" id="summary-fee">-0.50%</span>
+                </div>
+                <div class="loss-divider"></div>
+                <div class="loss-row total-row">
+                  <span>Net Realized Yield (IRR)</span>
+                  <span class="loss-val emerald-text bold" id="summary-net">10.42%</span>
+                </div>
+                <div class="alpha-banner">
+                  <span>💡 ML Filter saves <strong id="summary-savings">$3,750</strong> annually in defaulted principal loss!</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: MACRO STRESS TESTING -->
+    <section class="tab-panel" id="panel-stress-test">
+      <div class="panel-hero">
+        <div>
+          <h2>Macroeconomic Shock & Stress Testing</h2>
+          <p>Subject your constructed loan portfolio to simulated economic downturns, credit contractions, and inflation shocks to gauge capital preservation resilience.</p>
+        </div>
+        <div class="stress-scenario-pills">
+          <button class="btn btn-chip active" id="shock-baseline">Normal Expansion</button>
+          <button class="btn btn-chip" id="shock-rate-hike">Fed Rate Hike (+250 bps)</button>
+          <button class="btn btn-chip" id="shock-mild-recession">Mild Downturn (+2% Unemp)</button>
+          <button class="btn btn-chip" id="shock-2008-crisis">2008 GFC Shock (+5% Unemp)</button>
+        </div>
+      </div>
+
+      <div class="stress-kpi-row">
+        <div class="metric-card">
+          <span class="metric-card-label">Simulated Macro Scenario</span>
+          <div class="metric-card-value cyan-text" id="stress-scenario-name">Normal Expansion</div>
+          <span class="metric-card-sub" id="stress-scenario-desc">Stable GDP, 4.0% unemployment</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-card-label">Shock Default Probability</span>
+          <div class="metric-card-value rose-text" id="stress-shock-default">2.1%</div>
+          <span class="metric-card-sub" id="stress-default-delta">+0.2% above baseline</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-card-label">Projected Max Drawdown</span>
+          <div class="metric-card-value amber-text" id="stress-drawdown">-1.4%</div>
+          <span class="metric-card-sub">Peak-to-trough capital shock</span>
+        </div>
+        <div class="metric-card highlight-card">
+          <span class="metric-card-label">Post-Shock Net Return</span>
+          <div class="metric-card-value emerald-text" id="stress-post-return">+9.8%</div>
+          <span class="metric-card-sub">Portfolio maintains positive yield!</span>
+        </div>
+      </div>
+
+      <div class="two-column-layout">
+        <div class="glass-card">
+          <div class="card-header">
+            <div class="header-indicator rose"></div>
+            <div>
+              <h3>Default Sensitivity by Grade under Stress</h3>
+              <p class="card-subtitle">Subprime grades (D-G) experience exponentially higher default surges during shocks</p>
+            </div>
+          </div>
+          <div class="chart-container" style="height: 280px;">
+            <canvas id="stressBarChart"></canvas>
+          </div>
+        </div>
+
+        <div class="glass-card">
+          <div class="card-header">
+            <div class="header-indicator cyan"></div>
+            <div>
+              <h3>Portfolio Resiliency Matrix</h3>
+              <p class="card-subtitle">Stress testing findings and defensive recommendations</p>
+            </div>
+          </div>
+          <div class="resiliency-matrix">
+            <div class="resilience-item">
+              <div class="resilience-badge grade-a">Grade A & B Resiliency</div>
+              <p>Top tier loans exhibit only a 1.2x default multiplier during recession shocks due to borrower income cushions and home equity stability.</p>
+            </div>
+            <div class="resilience-item">
+              <div class="resilience-badge grade-c">Grade C & D Vulnerability</div>
+              <p>Moderate grades experience a 2.3x surge in delinquent payments when debt-to-income exceeds 20% in high interest regimes.</p>
+            </div>
+            <div class="resilience-item">
+              <div class="resilience-badge grade-d">Grade E-G Tail Risk</div>
+              <p>Speculative notes exhibit up to 38% default rates in deep recessions. The ML filter eliminates 92% of these toxic notes before allocation.</p>
+            </div>
+            <div class="alert-box">
+              <span class="alert-icon">🛡️</span>
+              <div>
+                <strong>Machine Learning Safeguard</strong>
+                <p>Because our balanced classifier prioritizes Class 0 recall (87%), high-volatility borrowers are screened out, buffering your principal against macro shocks.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: DATASET ANALYTICS -->
+    <section class="tab-panel" id="panel-insights">
+      <div class="panel-hero">
+        <div>
+          <h2>Exploratory Data Analysis (EDA) Insights</h2>
+          <p>Key empirical findings and distributions from the 40,000+ LendingClub loan records analyzed in the Capstone notebooks.</p>
+        </div>
+      </div>
+
+      <div class="insights-grid">
+        <!-- Card 1: Grade vs Interest & Payoff -->
+        <div class="glass-card">
+          <div class="card-header">
+            <div class="header-indicator cyan"></div>
+            <div>
+              <h3>Grade vs Interest Rate & Payoff Rate</h3>
+              <p class="card-subtitle">Linear interest rate escalations vs declining payoff probability</p>
+            </div>
+          </div>
+          <div class="chart-container" style="height: 260px;">
+            <canvas id="edaGradeChart"></canvas>
+          </div>
+          <div class="insight-takeaway">
+            <strong>Key Finding:</strong> Interest rates climb linearly from 7.3% (Grade A) to 25.4% (Grade G). Conversely, payoff rates drop from 94.2% down to 62.1%. Grade B provides the optimal risk/reward sweet spot.
+          </div>
+        </div>
+
+        <!-- Card 2: Term Distribution -->
+        <div class="glass-card">
+          <div class="card-header">
+            <div class="header-indicator emerald"></div>
+            <div>
+              <h3>Term Duration: 36 vs 60 Months</h3>
+              <p class="card-subtitle">Loan volume and relative default rates across loan tenures</p>
+            </div>
+          </div>
+          <div class="chart-container" style="height: 260px;">
+            <canvas id="edaTermChart"></canvas>
+          </div>
+          <div class="insight-takeaway">
+            <strong>Key Finding:</strong> 36-month loans comprise ~75% of total volume and have a significantly higher payoff rate (87.8%) compared to 60-month loans (74.2%).
+          </div>
+        </div>
+
+        <!-- Card 3: Top States Volume & Default -->
+        <div class="glass-card">
+          <div class="card-header">
+            <div class="header-indicator amber"></div>
+            <div>
+              <h3>Top Geographic Distribution</h3>
+              <p class="card-subtitle">Loan origination concentration across primary states</p>
+            </div>
+          </div>
+          <div class="chart-container" style="height: 260px;">
+            <canvas id="edaGeoChart"></canvas>
+          </div>
+          <div class="insight-takeaway">
+            <strong>Key Finding:</strong> California (~35.7%) and New York (~18.2%) represent over half of all loan originations. However, default rates remain consistent across all 6 key states.
+          </div>
+        </div>
+
+        <!-- Card 4: Model Comparison Matrix -->
+        <div class="glass-card">
+          <div class="card-header">
+            <div class="header-indicator rose"></div>
+            <div>
+              <h3>Model Architecture Evaluation</h3>
+              <p class="card-subtitle">Cross-validated metrics across tested machine learning classifiers</p>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="eda-table">
+              <thead>
+                <tr>
+                  <th>Classifier Model</th>
+                  <th>Class Weight</th>
+                  <th>Class 1 Precision</th>
+                  <th>Class 0 Recall</th>
+                  <th>AUC-ROC</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="highlight-row">
+                  <td><strong>Logistic Regression (Selected)</strong></td>
+                  <td><span class="chip-active">Balanced</span></td>
+                  <td><strong class="emerald-text">0.98</strong></td>
+                  <td><strong class="cyan-text">0.87</strong></td>
+                  <td><strong>0.71</strong></td>
+                </tr>
+                <tr>
+                  <td>Random Forest</td>
+                  <td>Balanced</td>
+                  <td>0.94</td>
+                  <td>0.68</td>
+                  <td>0.70</td>
+                </tr>
+                <tr>
+                  <td>Logistic Regression</td>
+                  <td>Default (None)</td>
+                  <td>0.86</td>
+                  <td>0.14</td>
+                  <td>0.69</td>
+                </tr>
+                <tr>
+                  <td>Random Forest</td>
+                  <td>Default (None)</td>
+                  <td>0.87</td>
+                  <td>0.19</td>
+                  <td>0.70</td>
+                </tr>
+                <tr>
+                  <td>Zero Model (Baseline)</td>
+                  <td>—</td>
+                  <td>0.85</td>
+                  <td>0.00</td>
+                  <td>0.50</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="insight-takeaway">
+            <strong>Why Balanced Class Weights:</strong> Because the dataset is 85% paid off and 15% charged off, standard models predict all loans as paid off (85% naive accuracy but 0% default detection). Setting balanced weights enables the model to catch 87% of all defaults!
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <div class="footer-content">
+      <p><strong>LoanIQ Portfolio Engine</strong> &bull; Part of Charan's Data Science & Machine Learning Portfolio</p>
+      <div class="footer-links">
+        <a href="https://github.com/Charanloyal/Data-Science-Projects" target="_blank" rel="noopener noreferrer">GitHub Repository</a>
+        <span>&bull;</span>
+        <a href="../README.md">Portfolio Directory</a>
+        <span>&bull;</span>
+        <a href="notebooks/loan_portfolio_detailed_self.ipynb">View Capstone Notebook</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
