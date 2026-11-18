@@ -207,7 +207,7 @@ def train_and_score(db_path: Path = DB_PATH, oracle_path: Path = ORACLE_PATH) ->
     rng = np.random.default_rng(SEED)
     boot = [roc_auc_score(yte[i], p_lgbm[i]) for i in (rng.integers(0, len(yte), len(yte)) for _ in range(500))]
     controls = [roc_auc_score(yte, make_lgbm(config).fit(Xtr, np.random.default_rng([SEED, k]).permutation(ytr)).predict_proba(Xte)[:, 1])
-                for k in range(5)]
+                for k in range(20)]
     oracle = pd.read_csv(oracle_path).set_index("customer_id").loc[ids[idx_test], "oracle_churn_prob"].to_numpy() \
         if Path(oracle_path).exists() else None
 
@@ -261,8 +261,12 @@ def train_and_score(db_path: Path = DB_PATH, oracle_path: Path = ORACLE_PATH) ->
         "test_lightgbm_roc_auc_bootstrap_95ci": [round(float(np.percentile(boot, 2.5)), 4), round(float(np.percentile(boot, 97.5)), 4)],
         "oracle_test": metrics(yte, oracle) if oracle is not None else None,
         "oracle_note": "generator's own churn probability (includes an unobserved factor); ceiling for any model on this data",
-        "label_shuffle_control_test_roc_auc": {"draws": [round(float(c), 4) for c in controls],
-                                               "mean": round(float(np.mean(controls)), 4)},
+        "label_shuffle_control_test_roc_auc": {
+            "draws": len(controls), "mean": round(float(np.mean(controls)), 4), "std": round(float(np.std(controls)), 4),
+            "min": round(float(np.min(controls)), 4), "max": round(float(np.max(controls)), 4),
+            "note": "LightGBM refitted on permuted training labels; leakage would push the mean above 0.5. The spread is "
+                    "wider than for random scores because a noise-fitted model is still a function of predictive features.",
+        },
         "cross_fitted_all_customers": metrics(y, oof),
         "risk_tiers": cohorts,
         "top_shap_features": importance.head(8)[["feature", "mean_abs_shap", "mean_shap_high_risk"]].to_dict("records"),

@@ -47,5 +47,5 @@ def test_scores_tiers_and_drivers(small_model):
 def test_evaluation_is_sane(small_model):
     e = small_model.evaluation
     assert e["test"]["lightgbm"]["roc_auc"] > 0.65
-    assert 0.35 < e["label_shuffle_control_test_roc_auc"]["mean"] < 0.65
+    assert 0.3 < e["label_shuffle_control_test_roc_auc"]["mean"] < 0.6
     assert e["cv_train_5fold"]["lightgbm_selected_config"] in churn_model.LGBM_GRID
