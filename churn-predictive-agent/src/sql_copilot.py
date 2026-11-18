@@ -660,7 +660,8 @@ def main() -> None:
     if args.json:
         print(json.dumps(answer.as_dict(), indent=2, default=str))
         return
-    print(f"-- source: {answer.source}\n{answer.sql}\n-- params: {answer.params}\n")
+    if answer.ok:
+        print(f"-- source: {answer.source}\n{answer.sql}\n-- params: {answer.params}\n")
     print(answer.summary())
 
 
