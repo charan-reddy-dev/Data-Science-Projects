@@ -1,0 +1,22 @@
+[
+  {"id": "h01", "question": "Which region has the highest churn rate?",
+   "gold_sql": "SELECT region, AVG(churned) AS r FROM customers GROUP BY region ORDER BY r DESC LIMIT 1", "ordered": true},
+  {"id": "h02", "question": "Churn rate for customers on Two-Year contracts",
+   "gold_sql": "SELECT AVG(churned) FROM customers WHERE contract = 'Two-Year'", "ordered": false},
+  {"id": "h03", "question": "How many SMB customers pay by electronic check?",
+   "gold_sql": "SELECT COUNT(*) FROM customers WHERE segment = 'SMB' AND payment_method = 'Electronic check'", "ordered": false},
+  {"id": "h04", "question": "Average data usage per month",
+   "gold_sql": "SELECT month, AVG(data_gb) FROM usage_monthly GROUP BY month", "ordered": false},
+  {"id": "h05", "question": "Total outage minutes by region",
+   "gold_sql": "SELECT c.region, SUM(u.outage_minutes) FROM usage_monthly u JOIN customers c ON c.customer_id = u.customer_id GROUP BY c.region", "ordered": false},
+  {"id": "h06", "question": "What is the average CSAT for Billing tickets?",
+   "gold_sql": "SELECT AVG(csat) FROM support_tickets WHERE category = 'Billing'", "ordered": false},
+  {"id": "h07", "question": "Number of late payments by payment method",
+   "gold_sql": "SELECT c.payment_method, COUNT(*) FROM payments p JOIN customers c ON c.customer_id = p.customer_id WHERE p.status = 'late' GROUP BY c.payment_method", "ordered": false},
+  {"id": "h08", "question": "Churn rate by risk tier",
+   "gold_sql": "SELECT s.risk_tier, AVG(c.churned) FROM customers c JOIN churn_scores s ON s.customer_id = c.customer_id GROUP BY s.risk_tier", "ordered": false},
+  {"id": "h09", "question": "How many customers have monthly charges above 1000?",
+   "gold_sql": "SELECT COUNT(*) FROM customers WHERE monthly_charges > 1000", "ordered": false},
+  {"id": "h10", "question": "Average tenure of churned customers by contract type",
+   "gold_sql": "SELECT contract, AVG(tenure_months) FROM customers WHERE churned = 1 GROUP BY contract", "ordered": false}
+]

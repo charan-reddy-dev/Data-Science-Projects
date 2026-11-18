@@ -1,0 +1,28 @@
+name: ChurnIntel
+
+on:
+  push:
+    paths: ["churn-predictive-agent/**", ".github/workflows/churnintel.yml"]
+  pull_request:
+    paths: ["churn-predictive-agent/**", ".github/workflows/churnintel.yml"]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.12", "3.13"]
+    defaults:
+      run:
+        working-directory: churn-predictive-agent
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: churn-predictive-agent/requirements.txt
+      - run: pip install -r requirements.txt
+      - run: pytest -q
+      - name: Full evaluation smoke run
+        run: python benchmarks/eval_copilot.py --output /tmp/results.json
